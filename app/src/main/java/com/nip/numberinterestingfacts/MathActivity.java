@@ -1,8 +1,9 @@
-package com.example.numberinterestingfacts;
+package com.nip.numberinterestingfacts;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -33,18 +35,18 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RandomActivity extends AppCompatActivity {
+public class MathActivity extends AppCompatActivity {
     private TextView resultsField;
     private EditText editTextNumber;
     private ImageView menuIcon, exitIcon;
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
-    private Button randomDownButton, yearButton, dateButton, mathButton, searchButton, randomTopButton;
+    private Button randomDownButton, randomTopButton, yearButton, dateButton, searchButton, mathButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_random);
+        setContentView(R.layout.activity_math);
         //Initialize the objects
         resultsField = (TextView) findViewById(R.id.results);
         randomDownButton = (Button) findViewById(R.id.randomDownButton);
@@ -55,18 +57,19 @@ public class RandomActivity extends AppCompatActivity {
         randomTopButton = (Button) findViewById(R.id.randomTopButton);
         menuIcon = (ImageView) findViewById(R.id.menu_icon);
         exitIcon = (ImageView) findViewById(R.id.exit_icon);
-        randomTopButton.setClickable(false);
-        randomTopButton.setBackgroundColor(Color.parseColor("#cccccc"));
-        randomTopButton.setTextColor(Color.parseColor("#666666"));
-        getDataRandom();
+        mathButton = (Button) findViewById(R.id.math);
+        mathButton.setClickable(false);
+        mathButton.setBackgroundColor(Color.parseColor("#cccccc"));
+        mathButton.setTextColor(Color.parseColor("#666666"));
+        getDataMath();
         setAdds();
-        //Initialize the banner ads
+        //Initialize the ads
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
-        //Load the banner ads
+        //Load the ads
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -92,10 +95,10 @@ public class RandomActivity extends AppCompatActivity {
         });
     }
 
-    //Method is used to call random api by clicking on Random button
-    private void getDataRandom() {
+    //Method is used to call random math api by clicking on Random Math button
+    private void getDataMath() {
         //Create a String request using Volley Library
-        String myUrl = "http://numbersapi.com/random/trivia?json";
+        String myUrl = "http://numbersapi.com/random/math?json";
         StringRequest myRequest = new StringRequest(Request.Method.GET, myUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -110,19 +113,19 @@ public class RandomActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(RandomActivity.this, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MathActivity.this, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(myRequest);
     }
 
-    //Method is used to call random api by passing number parameter and clicking on Search button
+    //Method is used to call math api by passing number parameter and clicking on Search button
     private void getDataSearchRandom() {
         //Create a String request using Volley Library
         editTextNumber = (EditText) findViewById(R.id.editTextNumber);
         String edit_text_data = editTextNumber.getText().toString();
-        String myUrl = "http://numbersapi.com/" + edit_text_data + "/trivia?json";
+        String myUrl = "http://numbersapi.com/" + edit_text_data + "/math?json";
         StringRequest myRequest = new StringRequest(Request.Method.GET, myUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -137,7 +140,7 @@ public class RandomActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(RandomActivity.this, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MathActivity.this, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -155,34 +158,6 @@ public class RandomActivity extends AppCompatActivity {
             manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
-    //Method is used to open activity Year by pressing button Year
-    private void openActivityYear() {
-        Intent intent = new Intent(this, YearActivity.class);
-        //Close previous activities
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-    }
-
-    //Method is used to open activity Date by pressing button Date
-    private void openActivityDate() {
-        Intent intent = new Intent(this, DateActivity.class);
-        //Close all previous activities
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-    }
-
-    //Method is used to open activity Math by pressing button Math
-    private void openActivityMath() {
-        Intent intent = new Intent(this, MathActivity.class);
-        //Close previous activities
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-    }
-
     //Method is used to open activity Menu by pressing Menu icon
     private void openActivityMenu() {
         Intent intent = new Intent(this, MenuActivity.class);
@@ -192,7 +167,7 @@ public class RandomActivity extends AppCompatActivity {
         finish();
     }
 
-    //Method is used to open activity Random by pressing Back button on phone
+    //Method is used to close keyboard after entering value in text field
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -201,18 +176,42 @@ public class RandomActivity extends AppCompatActivity {
         finish();
     }
 
+    //Method is used to open activity Year by pressing button Year
+    private void openActivityYear() {
+        Intent intent = new Intent(this, YearActivity.class);
+        //Close previous activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    //Method is used to open activity Date by pressing button Date
+    private void openActivityDate() {
+        Intent intent = new Intent(this, DateActivity.class);
+        //Close previous activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    //Method is used to open activity Random by pressing button Random
+    private void openActivityRandom() {
+        Intent intent = new Intent(this, RandomActivity.class);
+        //Close previous activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        //Click listener is used to call getDataRandom method to call Random api by pressing Random button
+        //Click listener is used to call getDataMath method to call Math api by pressing Random Math button
         randomDownButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDataRandom();
+                getDataMath();
             }
         });
 
-        //Click listener is used to call openActivityYear method to open Year activity by press Year button
+        //Click listener is used to call openActivityYear method to open Year activity by pressing Random Year button
         yearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,7 +219,7 @@ public class RandomActivity extends AppCompatActivity {
             }
         });
 
-        //Click listener is used to call openActivityDate method to open Date activity by pressing Date button
+        //Click listener is used to call openActivityDate method to open Date activity by pressing Random date button
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -228,15 +227,15 @@ public class RandomActivity extends AppCompatActivity {
             }
         });
 
-        //Click listener is used to call openActivityMath method to open Math activity by press Math button
-        mathButton.setOnClickListener(new View.OnClickListener() {
+        //Click listener is used to call openActivityRandom method to open Random activity by pressing Random button
+        randomTopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openActivityMath();
+                openActivityRandom();
             }
         });
 
-        //Click listener is used to call getDataSearchRandom method to call Random api by passing number parameter and clicking on Search button
+        //Click listener is used to call getDataSearchRandom method to call Math api by passing number parameter and clicking on Search button
         //Click listener is used to call closeKeyboard method to close keyboard by pressing somewhere on the screen
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,7 +243,7 @@ public class RandomActivity extends AppCompatActivity {
                 EditText editTextNumber = (EditText) findViewById(R.id.editTextNumber);
                 String sUsername = editTextNumber.getText().toString();
                 if (sUsername.matches("")) {
-                    Toast.makeText(RandomActivity.this, "Please enter numeric value!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MathActivity.this, "Please enter numeric value!", Toast.LENGTH_SHORT).show();
                 } else {
                     getDataSearchRandom();
                     closeKeyboard();
@@ -264,12 +263,12 @@ public class RandomActivity extends AppCompatActivity {
         exitIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mInterstitialAd.show(RandomActivity.this);
+                mInterstitialAd.show(MathActivity.this);
                 mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                     @Override
                     public void onAdDismissedFullScreenContent() {
                         super.onAdDismissedFullScreenContent();
-                        startActivity(new Intent(RandomActivity.this, ExitActivity.class));
+                        startActivity(new Intent(MathActivity.this, ExitActivity.class));
                         finish();
                         System.exit(0);
                     }

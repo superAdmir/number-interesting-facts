@@ -1,4 +1,4 @@
-package com.example.numberinterestingfacts;
+package com.nip.numberinterestingfacts;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -1,4 +1,4 @@
-package com.example.numberinterestingfacts;
+package com.nip.numberinterestingfacts;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

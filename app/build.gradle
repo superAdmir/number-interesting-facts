@@ -3,22 +3,23 @@ plugins {
 }
 
 android {
-    namespace 'com.example.numberinterestingfacts'
+    namespace 'com.nip.numberinterestingfacts'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.numberinterestingfacts"
+        applicationId "com.nip.numberinterestingfacts"
         minSdk 21
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 11
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
