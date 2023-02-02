@@ -10,8 +10,8 @@ android {
         applicationId "com.nip.numberinterestingfacts"
         minSdk 21
         targetSdk 32
-        versionCode 11
-        versionName "1.1"
+        versionCode 14
+        versionName "1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -270,16 +270,23 @@ public class RandomActivity extends AppCompatActivity {
         exitIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mInterstitialAd.show(RandomActivity.this);
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        super.onAdDismissedFullScreenContent();
-                        startActivity(new Intent(RandomActivity.this, ExitActivity.class));
-                        finish();
-                        System.exit(0);
-                    }
-                });
+                if (mInterstitialAd == null) {
+                    Intent intent = new Intent(RandomActivity.this, ExitActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    mInterstitialAd.show(RandomActivity.this);
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent();
+                            startActivity(new Intent(RandomActivity.this, ExitActivity.class));
+                            finish();
+                            System.exit(0);
+                        }
+                    });
+                }
             }
         });
     }

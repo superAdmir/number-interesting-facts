@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -300,16 +301,23 @@ public class DateActivity extends AppCompatActivity {
         exitIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mInterstitialAd.show(DateActivity.this);
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        super.onAdDismissedFullScreenContent();
-                        startActivity(new Intent(DateActivity.this, ExitActivity.class));
-                        finish();
-                        System.exit(0);
-                    }
-                });
+                if (mInterstitialAd == null) {
+                    Intent intent = new Intent(DateActivity.this, ExitActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    mInterstitialAd.show(DateActivity.this);
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent();
+                            startActivity(new Intent(DateActivity.this, ExitActivity.class));
+                            finish();
+                            System.exit(0);
+                        }
+                    });
+                }
             }
         });
     }
