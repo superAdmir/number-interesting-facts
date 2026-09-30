@@ -1,176 +1,317 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Main screen: all four fact categories. RandomActivity stays the launcher component. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:orientation="vertical"
     tools:context=".RandomActivity">
 
-    <TextView
-        android:id="@+id/results"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:text="Please wait to display data!"
-        android:typeface="monospace"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        android:background="?android:attr/colorBackground">
 
-    <Button
-        android:id="@+id/randomDownButton"
-        android:layout_width="150dp"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/main_menu"
+            app:title="@string/app_name" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.nip.numberinterestingfacts.ui.InsetAwareScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/screen_gutter"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="@dimen/content_max_width">
+
+                <!-- Wraps instead of scrolling: one line when the labels fit, more lines at large
+                     font sizes, so no category is ever cut off. -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/categoryGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="8dp"
+                    app:chipSpacingVertical="4dp"
+                    app:selectionRequired="true"
+                    app:singleLine="false"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTrivia"
+                        style="@style/Widget.NumberFacts.CategoryChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/category_trivia" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipYear"
+                        style="@style/Widget.NumberFacts.CategoryChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_year" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipDate"
+                        style="@style/Widget.NumberFacts.CategoryChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_date" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMath"
+                        style="@style/Widget.NumberFacts.CategoryChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_math" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <!-- Fact card: the hero of the app -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/factCard"
+                    style="@style/Widget.Material3.CardView.Filled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="260dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/card_padding">
+
+                        <TextView
+                            android:id="@+id/factEyebrow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.NumberFacts.Eyebrow"
+                            tools:text="Random fact" />
+
+                        <TextView
+                            android:id="@+id/factSubject"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:textAppearance="@style/TextAppearance.NumberFacts.Subject"
+                            tools:text="1729" />
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:minHeight="96dp">
+
+                            <TextView
+                                android:id="@+id/factText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:accessibilityLiveRegion="polite"
+                                android:textAppearance="@style/TextAppearance.NumberFacts.FactBody"
+                                android:textIsSelectable="true"
+                                tools:text="1729 is the smallest number expressible as the sum of two cubes in two different ways." />
+
+                            <com.google.android.material.progressindicator.CircularProgressIndicator
+                                android:id="@+id/factProgress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/loading_fact"
+                                android:indeterminate="true"
+                                android:visibility="gone" />
+                        </FrameLayout>
+
+                        <!-- Calculated fact: only ever a labelled supplement or fallback. -->
+                        <LinearLayout
+                            android:id="@+id/supplementBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/bg_supplement"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/supplementLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/supplement_label"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <TextView
+                                android:id="@+id/supplementText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textIsSelectable="true"
+                                tools:text="1969 is a common year of 365 days." />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/factSource"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:minHeight="48dp"
+                            android:gravity="center_vertical"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            tools:text="Source: Wikipedia, “1969” · CC BY-SA 4.0" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/retryButton"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/action_try_again"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_refresh_24" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/newFactButton"
+                                style="@style/Widget.Material3.Button"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/action_new_random_fact"
+                                app:icon="@drawable/baseline_shuffle_24" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/copyButton"
+                                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:contentDescription="@string/action_copy_fact"
+                                android:tooltipText="@string/action_copy_fact"
+                                app:icon="@drawable/ic_copy_24" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/shareButton"
+                                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:contentDescription="@string/action_share_fact"
+                                android:tooltipText="@string/action_share_fact"
+                                app:icon="@drawable/ic_share_24" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Look up a specific number, year or date -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/lookupCard"
+                    style="@style/Widget.Material3.CardView.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/section_gap"
+                    app:shapeAppearance="?attr/shapeAppearanceCornerLarge">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:id="@+id/lookupTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.NumberFacts.SectionTitle"
+                            tools:text="@string/lookup_title_number" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/lookupInputLayout"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            app:helperTextEnabled="true"
+                            app:startIconDrawable="@drawable/ic_search_24"
+                            tools:helperText="@string/lookup_helper_number"
+                            tools:hint="@string/lookup_hint_number">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/lookupInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionSearch"
+                                android:inputType="number"
+                                android:maxLength="4" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/lookupButton"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/action_show_fact" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.nip.numberinterestingfacts.ui.InsetAwareScrollView>
+
+    <!-- Banner slot; stays hidden until an ad has actually loaded. The divider and padding keep
+         the ad visually separate from the controls above it. -->
+    <LinearLayout
+        android:id="@+id/adContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="90dp"
-        android:layout_marginBottom="100dp"
-        android:text="Random"
-        android:textSize="14sp"
-        android:typeface="monospace"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.764"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/menu_icon"
-        android:layout_width="45dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="35dp"
-        android:layout_marginEnd="350dp"
-        android:layout_marginBottom="92dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_menu_24" />
-
-    <ImageView
-        android:id="@+id/exit_icon"
-        android:layout_width="45dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginBottom="92dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.978"
-        app:layout_constraintStart_toEndOf="@+id/menu_icon"
-        app:srcCompat="@drawable/ic_baseline_exit_to_app_24" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="340dp"
-        android:layout_height="57dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="false"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/randomDownButton"
-        tools:ignore="MissingConstraints" />
-
-    <LinearLayout
-        android:layout_width="454dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="110dp">
-
-
-        <Button
-            android:id="@+id/randomTopButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:text="@string/randomTopButton"
-            android:textSize="10dp"
-            android:typeface="monospace"
-            tools:ignore="MissingConstraints" />
-
-        <Button
-            android:id="@+id/year"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:text="Year"
-            android:textSize="10dp"
-            android:typeface="monospace"
-            tools:ignore="MissingConstraints" />
-
-        <Button
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:text="Date"
-            android:textSize="10dp"
-            android:typeface="monospace" />
-
-        <Button
-            android:id="@+id/math"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:text="Math"
-            android:textSize="10dp"
-            android:typeface="monospace"
-            tools:ignore="MissingConstraints" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="368dp"
-        android:layout_height="156dp"
+        android:background="?attr/colorSurfaceContainer"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="21dp"
-        tools:layout_editor_absoluteY="160dp">
+        android:visibility="gone">
 
-        <EditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="-55dp"
-            android:backgroundTint="@color/white"
-            android:ems="4"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:hint="Number"
-            android:inputType="number"
-            android:maxLength="4"
-            android:textCursorDrawable="@color/white"
-            android:textSize="15dp"
-            android:typeface="monospace" />
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/searchButton"
-            android:layout_width="100dp"
+        <FrameLayout
+            android:id="@+id/adSlot"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="140dp"
-            android:layout_marginTop="50dp"
-            android:onClick="btnClicked"
-            android:text="Search"
-            android:textSize="10dp"
-            android:typeface="monospace" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

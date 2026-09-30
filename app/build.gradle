@@ -2,49 +2,153 @@ plugins {
     id 'com.android.application'
 }
 
+// Debug-only QA switches; release builds ignore them (see buildTypes.release below).
+//   -PumpDebugGeography=EEA|REGULATED_US_STATE|OTHER  force the consent flow's region
+//   -PumpTestDeviceId=<hashed id from logcat>        required for the debug geography to apply
+//   -PscreenshotMode=true                            no ads at all, for store screenshots
+def umpDebugGeography = (project.findProperty('umpDebugGeography') ?: '').toString()
+def umpTestDeviceId = (project.findProperty('umpTestDeviceId') ?: '').toString()
+def screenshotMode = (project.findProperty('screenshotMode') ?: 'false').toString().toBoolean()
+
+// ---- AdMob configuration: the single place ad IDs are defined ----
+// App IDs contain "~", ad unit IDs contain "/". Each fact category keeps its own banner unit,
+// as in version 1.5 where every category was a separate screen.
+def admobRelease = [
+        // Owner-provided production IDs (2026-09-25), matching the IDs found in the 1.5 bundle,
+        // except the interstitial: 1.5 shipped the Year banner ID (…/2325921024) there by mistake.
+        appId: 'ca-app-pub-6402675413704299~8756323389',
+        units: [
+                banner_random: 'ca-app-pub-6402675413704299/3830574382', // nifRandomBanner
+                banner_year  : 'ca-app-pub-6402675413704299/2325921024', // nifYearBanner
+                banner_date  : 'ca-app-pub-6402675413704299/6579757155', // nifDateBanner
+                banner_math  : 'ca-app-pub-6402675413704299/1395982738', // nifMathBanner
+                interstitial : 'ca-app-pub-6402675413704299/7346043914', // nifInterstitial
+        ],
+]
+def admobDebug = [
+        appId: 'ca-app-pub-3940256099942544~3347511713',
+        units: [
+                banner_random: 'ca-app-pub-3940256099942544/6300978111', // sample fixed-size banner
+                banner_year  : 'ca-app-pub-3940256099942544/6300978111',
+                banner_date  : 'ca-app-pub-3940256099942544/6300978111',
+                banner_math  : 'ca-app-pub-3940256099942544/6300978111',
+                interstitial : 'ca-app-pub-3940256099942544/1033173712', // sample interstitial
+        ],
+]
+
+// ---- Release signing with the Play UPLOAD key ----
+// Non-secret settings come from the git-ignored file signing.local.properties in the project root:
+//   storeFile=/absolute/path/to/upload keystore        (kept outside the repository)
+//   keyAlias=<alias>
+//   storePasswordFile=/absolute/path/to/password file   (outside the repository, mode 600)
+// or, instead of storePasswordFile, the environment variables NIF_UPLOAD_STORE_PASSWORD and
+// (if different) NIF_UPLOAD_KEY_PASSWORD. Passwords never live in tracked files or on the command
+// line. Without this configuration release builds stay unsigned. Which certificate Play accepts is
+// recorded in tools/signing/upload-key-status.properties; check with tools/signing/verify-upload-key.sh.
+def signingProps = new Properties()
+def signingFile = rootProject.file('signing.local.properties')
+if (signingFile.exists()) signingFile.withInputStream { signingProps.load(it) }
+def passwordFromFile = { String path -> path ? new File(path).getText('UTF-8').trim() : null }
+def uploadStorePassword = System.getenv('NIF_UPLOAD_STORE_PASSWORD') ?: passwordFromFile(signingProps.getProperty('storePasswordFile'))
+def uploadKeyPassword = System.getenv('NIF_UPLOAD_KEY_PASSWORD') ?: uploadStorePassword
+def canSignRelease = signingProps.getProperty('storeFile') && signingProps.getProperty('keyAlias') && uploadStorePassword
+
 android {
-    namespace 'com.nip.numberinterestingfacts'
-    compileSdk 34
+    namespace = 'com.nip.numberinterestingfacts'
+    compileSdk = 36
 
     defaultConfig {
-        applicationId "com.nip.numberinterestingfacts"
-        minSdk 26
-        targetSdk 34
-        versionCode 15
-        versionName "1.5"
+        // Identity: must never change, the published app is com.nip.numberinterestingfacts.
+        applicationId = "com.nip.numberinterestingfacts"
+        minSdk = 26
+        targetSdk = 36
+        // Play Console (owner-confirmed 2026-09-26): production 17 / "1.7"; highest uploaded 17.
+        versionCode = 18
+        versionName = "2.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildFeatures {
+        buildConfig = true
+        resValues = true
+    }
+
+    signingConfigs {
+        if (canSignRelease) {
+            upload {
+                storeFile = file(signingProps.getProperty('storeFile'))
+                storePassword = uploadStorePassword
+                keyAlias = signingProps.getProperty('keyAlias')
+                keyPassword = uploadKeyPassword
+            }
+        }
     }
 
     buildTypes {
+        debug {
+            // Official Google sample IDs: debug builds never request live ads.
+            // https://developers.google.com/admob/android/test-ads
+            manifestPlaceholders = [admobAppId: admobDebug.appId]
+            admobDebug.units.each { name, id -> resValue 'string', "admob_${name}_unit_id", id }
+            buildConfigField 'String', 'UMP_DEBUG_GEOGRAPHY', "\"${umpDebugGeography}\""
+            buildConfigField 'String', 'UMP_TEST_DEVICE_ID', "\"${umpTestDeviceId}\""
+            buildConfigField 'boolean', 'ADS_ENABLED', "${!screenshotMode}"
+        }
         release {
-            shrinkResources true
-            minifyEnabled true
+            manifestPlaceholders = [admobAppId: admobRelease.appId]
+            admobRelease.units.each { name, id -> resValue 'string', "admob_${name}_unit_id", id }
+            buildConfigField 'String', 'UMP_DEBUG_GEOGRAPHY', '""'
+            buildConfigField 'String', 'UMP_TEST_DEVICE_ID', '""'
+            buildConfigField 'boolean', 'ADS_ENABLED', 'true'
+
+            shrinkResources = true
+            minifyEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (canSignRelease) signingConfig = signingConfigs.upload
+        }
+        // Local QA only, never uploaded: the release configuration (same code, R8, resource
+        // shrinking and optimisation) but with Google sample AdMob IDs and the debug keystore, so
+        // the shrunk build can be exercised without live ads. Output: app/build/outputs/*/qa/.
+        // It proves nothing about Play signing or upgrading a Play-installed copy.
+        qa {
+            initWith release
+            matchingFallbacks = ['release']
+            signingConfig = signingConfigs.debug
+            versionNameSuffix = '-qa'
+            manifestPlaceholders = [admobAppId: admobDebug.appId]
+            admobDebug.units.each { name, id -> resValue 'string', "admob_${name}_unit_id", id }
+            // Keeps only the handful of members the instrumented tests call (see file).
+            proguardFile 'proguard-qa-test.pro'
         }
     }
+    // Instrumented tests run against debug by default; -PtestBuildType=qa targets the shrunk QA build.
+    testBuildType = (project.findProperty('testBuildType') ?: 'debug').toString()
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    sourceSets {
-        main {
-            assets {
-                srcDirs 'src/main/assets'
-            }
-        }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
 dependencies {
-
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.activity:activity:1.13.0'
+    implementation 'androidx.core:core:1.18.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation 'com.android.volley:volley:1.2.1'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    implementation 'com.google.android.gms:play-services-ads:23.3.0'
+    implementation 'org.jsoup:jsoup:1.23.2'
+    implementation 'com.google.android.gms:play-services-ads:25.5.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
 
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20260814'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test:rules:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }

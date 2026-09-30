@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Space Grotesk (SIL OFL 1.1), static Medium instance of the Google Fonts variable master.
+     Used for numbers, screen titles and headlines. -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        android:font="@font/space_grotesk_medium"
+        android:fontStyle="normal"
+        android:fontWeight="500"
+        app:font="@font/space_grotesk_medium"
+        app:fontStyle="normal"
+        app:fontWeight="500" />
+</font-family>

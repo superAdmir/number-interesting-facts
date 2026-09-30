@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorBackground">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationContentDescription="@string/action_navigate_up"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:title="@string/settings_title" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.nip.numberinterestingfacts.ui.InsetAwareScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="@dimen/content_max_width">
+
+                <TextView
+                    style="@style/Widget.NumberFacts.SettingsHeader"
+                    android:id="@+id/header1"
+                    android:text="@string/settings_section_appearance" />
+
+                <LinearLayout
+                    android:id="@+id/themeRow"
+                    style="@style/Widget.NumberFacts.SettingsRow">
+
+                    <ImageView
+                        style="@style/Widget.NumberFacts.SettingsIcon"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_palette_24" />
+
+                    <LinearLayout style="@style/Widget.NumberFacts.SettingsTexts">
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsTitle"
+                            android:text="@string/settings_theme" />
+
+                        <TextView
+                            android:id="@+id/themeSummary"
+                            style="@style/Widget.NumberFacts.SettingsSummary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Widget.NumberFacts.SettingsHeader"
+                    android:id="@+id/header2"
+                    android:text="@string/settings_section_privacy" />
+
+                <LinearLayout
+                    android:id="@+id/privacyOptionsRow"
+                    style="@style/Widget.NumberFacts.SettingsRow"
+                    android:visibility="gone">
+
+                    <ImageView
+                        style="@style/Widget.NumberFacts.SettingsIcon"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_shield_24" />
+
+                    <LinearLayout style="@style/Widget.NumberFacts.SettingsTexts">
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsTitle"
+                            android:text="@string/settings_privacy_options" />
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsSummary"
+                            android:text="@string/settings_privacy_options_summary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/privacyPolicyRow"
+                    style="@style/Widget.NumberFacts.SettingsRow">
+
+                    <ImageView
+                        style="@style/Widget.NumberFacts.SettingsIcon"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_description_24" />
+
+                    <LinearLayout style="@style/Widget.NumberFacts.SettingsTexts">
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsTitle"
+                            android:text="@string/privacy_policy_title" />
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsSummary"
+                            android:text="@string/settings_privacy_policy_summary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Widget.NumberFacts.SettingsHeader"
+                    android:id="@+id/header3"
+                    android:text="@string/settings_section_about" />
+
+                <LinearLayout
+                    style="@style/Widget.NumberFacts.SettingsRow"
+                    android:background="@null"
+                    android:clickable="false"
+                    android:focusable="true">
+
+                    <ImageView
+                        style="@style/Widget.NumberFacts.SettingsIcon"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_info_24" />
+
+                    <LinearLayout style="@style/Widget.NumberFacts.SettingsTexts">
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsTitle"
+                            android:text="@string/settings_version" />
+
+                        <TextView
+                            android:id="@+id/versionSummary"
+                            style="@style/Widget.NumberFacts.SettingsSummary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/licensesRow"
+                    style="@style/Widget.NumberFacts.SettingsRow">
+
+                    <ImageView
+                        style="@style/Widget.NumberFacts.SettingsIcon"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_description_24" />
+
+                    <LinearLayout style="@style/Widget.NumberFacts.SettingsTexts">
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsTitle"
+                            android:text="@string/licenses_title" />
+
+                        <TextView
+                            style="@style/Widget.NumberFacts.SettingsSummary"
+                            android:text="@string/settings_licenses_summary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/factSourceNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingHorizontal="@dimen/screen_gutter"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.nip.numberinterestingfacts.ui.InsetAwareScrollView>
+</LinearLayout>

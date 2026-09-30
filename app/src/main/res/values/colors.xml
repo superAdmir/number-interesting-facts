@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- "Graph paper" palette, derived from the launcher icon's green grid. Light scheme. -->
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="md_primary">#006C4F</color>
+    <color name="md_on_primary">#FFFFFF</color>
+    <color name="md_primary_container">#89F8C9</color>
+    <color name="md_on_primary_container">#002115</color>
+    <color name="md_secondary">#4C6358</color>
+    <color name="md_on_secondary">#FFFFFF</color>
+    <color name="md_secondary_container">#CEE9DA</color>
+    <color name="md_on_secondary_container">#092017</color>
+    <color name="md_tertiary">#3E6374</color>
+    <color name="md_on_tertiary">#FFFFFF</color>
+    <color name="md_tertiary_container">#C2E8FC</color>
+    <color name="md_on_tertiary_container">#001F29</color>
+    <color name="md_error">#BA1A1A</color>
+    <color name="md_on_error">#FFFFFF</color>
+    <color name="md_error_container">#FFDAD6</color>
+    <color name="md_on_error_container">#410002</color>
+    <color name="md_surface">#F6FBF6</color>
+    <color name="md_on_surface">#171D1A</color>
+    <color name="md_surface_variant">#DBE5DE</color>
+    <color name="md_on_surface_variant">#404944</color>
+    <color name="md_outline">#707973</color>
+    <color name="md_outline_variant">#BFC9C2</color>
+    <color name="md_surface_container_lowest">#FFFFFF</color>
+    <color name="md_surface_container_low">#F0F5F0</color>
+    <color name="md_surface_container">#EAEFEA</color>
+    <color name="md_surface_container_high">#E4EAE5</color>
+    <color name="md_surface_container_highest">#DFE4DF</color>
+    <color name="md_inverse_surface">#2C322E</color>
+    <color name="md_inverse_on_surface">#EDF2ED</color>
+    <color name="md_inverse_primary">#6CDBAE</color>
+    <!-- Grid lines on the fact card: primary at low alpha. -->
+    <color name="grid_line">#1F006C4F</color>
 </resources>

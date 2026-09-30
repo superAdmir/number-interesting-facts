@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# WorkManager 2.7.0 (a transitive dependency of the Google Mobile Ads SDK) uses Room 2.2.5,
+# which creates its generated database (WorkDatabase_Impl) reflectively through the no-arg
+# constructor. Room 2.2.5's consumer rule keeps the class but not that constructor, and R8 full
+# mode (the AGP default) removes it, crashing the app at start-up ("Failed to create an instance
+# of androidx.work.impl.WorkDatabase"). Found by running the shrunk QA build on a device.
+-keep class * extends androidx.room.RoomDatabase { <init>(); }

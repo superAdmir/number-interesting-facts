@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Graph paper" palette, dark scheme. -->
+<resources>
+    <color name="md_primary">#6CDBAE</color>
+    <color name="md_on_primary">#003827</color>
+    <color name="md_primary_container">#00513B</color>
+    <color name="md_on_primary_container">#89F8C9</color>
+    <color name="md_secondary">#B3CCBE</color>
+    <color name="md_on_secondary">#1F352B</color>
+    <color name="md_secondary_container">#354B41</color>
+    <color name="md_on_secondary_container">#CEE9DA</color>
+    <color name="md_tertiary">#A6CCE0</color>
+    <color name="md_on_tertiary">#0A3444</color>
+    <color name="md_tertiary_container">#254B5B</color>
+    <color name="md_on_tertiary_container">#C2E8FC</color>
+    <color name="md_error">#FFB4AB</color>
+    <color name="md_on_error">#690005</color>
+    <color name="md_error_container">#93000A</color>
+    <color name="md_on_error_container">#FFDAD6</color>
+    <color name="md_surface">#0F1512</color>
+    <color name="md_on_surface">#DEE4DF</color>
+    <color name="md_surface_variant">#404944</color>
+    <color name="md_on_surface_variant">#BFC9C2</color>
+    <color name="md_outline">#89938D</color>
+    <color name="md_outline_variant">#404944</color>
+    <color name="md_surface_container_lowest">#0A0F0D</color>
+    <color name="md_surface_container_low">#171D1A</color>
+    <color name="md_surface_container">#1B211E</color>
+    <color name="md_surface_container_high">#252B28</color>
+    <color name="md_surface_container_highest">#303633</color>
+    <color name="md_inverse_surface">#DEE4DF</color>
+    <color name="md_inverse_on_surface">#2C322E</color>
+    <color name="md_inverse_primary">#006C4F</color>
+    <color name="grid_line">#246CDBAE</color>
+</resources>
